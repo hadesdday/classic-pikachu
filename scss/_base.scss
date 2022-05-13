@@ -1,15 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  font-family: "Montserrat", sans-serif;
+}
 
 .container {
   width: 100%;
   height: 100%;
-  padding:10px;
+  // padding: 10px;
   background: #011f3f;
 }
 
 .heading {
-  h1 {
-    font-family: "Press Start 2P", cursive;
+  h1,
+  #time {
+    font-family: "Press Start 2P", cursive !important;
     color: #fef2bf;
     text-align: center;
   }
@@ -21,10 +34,9 @@
 
 img {
   border: 1px solid black;
-}
-
-img:hover {
-  border: 1px solid red;
+  &:hover {
+    border: 1px solid red;
+  }
 }
 
 #increaseLevel {
@@ -42,4 +54,37 @@ img:hover {
 #increaseLevel:active {
   box-shadow: 0 0;
   transform: translateY(5px);
+}
+
+#restart {
+  position: absolute;
+  width: 8%;
+  padding: 1% 1%;
+  top: 55%;
+  left: 46%;
+  border: none;
+  box-shadow: 0 5px 5px black;
+  border-radius: 10px;
+  visibility: hidden;
+}
+
+#restart:active {
+  box-shadow: 0 0;
+  transform: translateY(5px);
+}
+
+.modal {
+  display: none;
+  width: 300px;
+  height: 200px;
+  padding: 50px;
+  background: linear-gradient(to bottom, white, red);
+  position: absolute;
+  top: 38%;
+  left: 37%;
+  p {
+    text-align: center;
+    font-family: "Press Start 2P", cursive;
+    color: #fef2bf;
+  }
 }

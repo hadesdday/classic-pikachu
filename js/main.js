@@ -4,7 +4,7 @@ var array = [];
 var twoDimensionalArray = [];
 var square;
 var correct = 0;
-var time = 300;
+var time = 99999;
 var isWin = false;
 
 $(() => {
@@ -99,7 +99,7 @@ function shuffle() {
     var row = this.getAttribute("row");
     var col = this.getAttribute("col");
 
-    var shuffleValue = random(0, 8);
+    var shuffleValue = random(1, boardSize);
     this.setAttribute("value", shuffleValue);
     twoDimensionalArray[row][col] = shuffleValue;
     var childElm = this.firstChild;
@@ -121,7 +121,7 @@ function select(elm) {
   let col = elm.getAttribute("col");
   let val = elm.getAttribute("value");
 
-  console.log("selecting now ", twoDimensionalArray[row][col]);
+  console.log("selecting now ", row, col, twoDimensionalArray[row][col]);
 
   elm.style.opacity = "0.5";
 
@@ -133,9 +133,7 @@ function select(elm) {
 
     if (array[0] == array[1]) {
       array = [];
-    } else if (
-      array[0].getAttribute("value") == array[1].getAttribute("value")
-    ) {
+    } else if (checkTwoPoint(first, second)) {
       twoDimensionalArray[first.getAttribute("row")][
         first.getAttribute("col")
       ] = 0;
@@ -166,25 +164,248 @@ function selfChoose(a, b) {
   return false;
 }
 
-function checkCorrectOnRow(a, b) {
-  console.log({ a, b });
+function checkTwoPoint(first, second) {
+  var firstRow = Number(first.getAttribute("row"));
+  var firstCol = Number(first.getAttribute("col"));
+  var firstVal = Number(first.getAttribute("value"));
+
+  var secondRow = Number(second.getAttribute("row"));
+  var secondCol = Number(second.getAttribute("col"));
+  var secondVal = Number(second.getAttribute("value"));
+
+  if (firstVal === secondVal) {
+    if (
+      firstRow === secondRow &&
+      checkLineX(firstCol, secondCol, first.getAttribute("row"))
+    ) {
+      return true;
+    }
+
+    if (
+      firstCol === secondCol &&
+      checkLineY(firstRow, secondRow, first.getAttribute("col"))
+    ) {
+      return true;
+    }
+
+    if (checkSquareX(first, second)) {
+      return true;
+    }
+
+    if (checkSquareY(first, second)) {
+      return true;
+    }
+
+    if (checkMoreLineX(first, second, 1)) {
+      return true;
+    }
+
+    if (checkMoreLineX(first, second, -1)) {
+      return true;
+    }
+
+    if (checkMoreLineY(first, second, 1)) {
+      return true;
+    }
+
+    if (checkMoreLineY(first, second, -1)) {
+      return true;
+    }
+  }
+  return false;
 }
 
-function checkSurround(a) {}
+function checkLineX(x, y, row) {
+  let min = Math.min(x, y);
+  let max = Math.max(x, y);
+
+  for (let i = min + 1; i < max; i++) {
+    if (twoDimensionalArray[row][i] !== 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function checkLineY(x, y, col) {
+  let min = Math.min(x, y);
+  let max = Math.max(x, y);
+
+  for (let i = min + 1; i < max; i++) {
+    if (twoDimensionalArray[i][col] !== 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function checkSquareX(x, y) {
+  let minY = x;
+  let maxY = y;
+
+  if (Number(x.getAttribute("col")) > Number(y.getAttribute("col"))) {
+    minY = y;
+    maxY = x;
+  }
+
+  let minCol = Number(minY.getAttribute("col"));
+  let minRow = Number(minY.getAttribute("row"));
+  let maxCol = Number(maxY.getAttribute("col"));
+  let maxRow = Number(maxY.getAttribute("row"));
+
+  for (let i = minCol; y <= maxCol; i++) {
+    if (i > minCol && twoDimensionalArray[minRow][i] !== 0) {
+      return false;
+    }
+    if (
+      twoDimensionalArray[maxRow][i] === 0 &&
+      checkLineY(minRow, maxRow, i) &&
+      checkLineX(i, maxCol, maxRow)
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkSquareY(x, y) {
+  let minX = x;
+  let maxX = y;
+
+  if (Number(x.getAttribute("row")) > Number(y.getAttribute("row"))) {
+    minX = y;
+    maxX = x;
+  }
+
+  let minRow = Number(minX.getAttribute("row"));
+  let minCol = Number(minX.getAttribute("col"));
+  let maxRow = Number(maxX.getAttribute("row"));
+  let maxCol = Number(maxX.getAttribute("col"));
+
+  for (let z = minRow; z <= maxRow; z++) {
+    if (z > minRow && twoDimensionalArray[z][minCol] !== 0) {
+      return false;
+    }
+    if (
+      twoDimensionalArray[z][maxCol] === 0 &&
+      checkLineX(minCol, maxCol, z) &&
+      checkLineY(z, maxRow, maxCol)
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkMoreLineX(p1, p2, type) {
+  let pMinY = p1;
+  let pMaxY = p2;
+
+  if (Number(p1.getAttribute("col")) > Number(p2.getAttribute("col"))) {
+    pMinY = p2;
+    pMaxY = p1;
+  }
+
+  let y = Number(pMaxY.getAttribute("col")) + Number(type);
+  let row = Number(pMinY.getAttribute("row"));
+  let colFinish = Number(pMaxY.getAttribute("col"));
+
+  if (type === -1) {
+    colFinish = Number(pMinY.getAttribute("col"));
+    y = Number(pMinY.getAttribute("col")) + Number(type);
+    row = Number(pMaxY.getAttribute("row"));
+  }
+
+  if (
+    (twoDimensionalArray[row][colFinish] === 0 ||
+      Number(pMinY.getAttribute("col")) ===
+        Number(pMaxY.getAttribute("col"))) &&
+    checkLineX(
+      Number(pMinY.getAttribute("col")),
+      Number(pMaxY.getAttribute("col")),
+      row
+    )
+  ) {
+    while (
+      twoDimensionalArray[Number(pMinY.getAttribute("row"))][y] === 0 &&
+      twoDimensionalArray[Number(pMaxY.getAttribute("row"))][y] === 0
+    ) {
+      if (
+        checkLineY(
+          Number(pMinY.getAttribute("row")),
+          Number(pMaxY.getAttribute("row")),
+          y
+        )
+      ) {
+        return true;
+      }
+      y += type;
+    }
+  }
+  return false;
+}
+
+function checkMoreLineY(p1, p2, type) {
+  var pMinX = p1;
+  var pMaxX = p2;
+
+  if (Number(p1.getAttribute("row")) > Number(p2.getAttribute("row"))) {
+    pMinX = p2;
+    pMaxX = p1;
+  }
+
+  var x = Number(pMaxX.getAttribute("row")) + Number(type);
+  var col = Number(pMinX.getAttribute("col"));
+  var rowFinish = Number(pMaxX.getAttribute("row"));
+
+  if (type === -1) {
+    rowFinish = Number(pMinX.getAttribute("row"));
+    x = Number(pMinX.getAttribute("row")) + Number(type);
+    col = Number(pMaxX.getAttribute("col"));
+  }
+
+  if (
+    (twoDimensionalArray[rowFinish][col] === 0 ||
+      Number(pMinX.getAttribute("row")) ===
+        Number(pMaxX.getAttribute("row"))) &&
+    checkLineY(
+      Number(pMinX.getAttribute("row")),
+      Number(pMaxX.getAttribute("row")),
+      col
+    )
+  ) {
+    while (
+      twoDimensionalArray[x][Number(pMinX.getAttribute("col"))] === 0 &&
+      twoDimensionalArray[x][Number(pMaxX.getAttribute("col"))] === 0
+    ) {
+      if (
+        checkLineX(
+          Number(pMinX.getAttribute("col")),
+          Number(pMaxX.getAttribute("col")),
+          x
+        )
+      ) {
+        return true;
+      }
+      x += type;
+    }
+  }
+  return false;
+}
 
 function drawBoard(size) {
-  var rowNum = Number(size);
-  var colNum = Number(size);
+  let rowNum = Number(size);
+  let colNum = Number(size);
 
-  var table = $("<table border='1'></table>");
-  var arr = [];
+  let table = $("<table border='1'></table>");
+  let arr = [];
 
-  for (var rowIndex = 0; rowIndex < rowNum; rowIndex++) {
-    var currentRow = $("<tr></tr>").appendTo(table);
-    for (var col = 0; col < colNum; col++) {
-      var randomVal = random(1, size);
+  for (let rowIndex = 0; rowIndex < rowNum; rowIndex++) {
+    let currentRow = $("<tr></tr>").appendTo(table);
+    for (let col = 0; col < colNum; col++) {
+      let randomVal = random(1, size);
       arr.push(randomVal);
-      var img =
+      let img =
         "<img width='50' height='50' src='image/" + randomVal + ".png'/>";
       currentRow.append(
         "<td width='50px' height='50px' row='" +

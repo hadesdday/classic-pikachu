@@ -5,6 +5,7 @@ var twoDimensionalArray = [];
 var square;
 var correct = 0;
 var time = 99999;
+var ogTime = 300;
 var isWin = false;
 
 $(() => {
@@ -13,7 +14,7 @@ $(() => {
   setScore(correct);
   setGameTime();
   setTimeLeft();
-  // drawMatrix();
+  playSound(3);
 });
 
 $("#shuffle").click(() => {
@@ -30,7 +31,8 @@ $("#showTwoDimensionalArray").click(function () {
 
 $("#increaseLevel").click(() => {
   var s = (level % 3) + 1;
-  time = 300;
+  time = ogTime + 50;
+  ogTime = time;
   setLevel((level += 1));
   drawBoard((boardSize += s));
   setScore(correct);
@@ -46,6 +48,7 @@ $("#restart").click(() => {
   correct = 0;
   array = [];
   time = 300;
+  ogTime = time;
   setLevel(level);
   drawBoard(boardSize);
   setScore(correct);
@@ -59,6 +62,30 @@ $("#restart").click(() => {
 $("#showArray").click(() => {
   console.log("array ", array);
 });
+
+function playSound(key) {
+  switch (Number(key)) {
+    case 0:
+      var clickSound = new Audio("sound/click.mp3");
+      clickSound.play();
+      break;
+    case 1:
+      var newGameSound = new Audio("sound/new-game.mp3");
+      newGameSound.play();
+      break;
+    case 2:
+      var wrongSound = new Audio("sound/wrong.mp3");
+      wrongSound.play();
+      break;
+    case 3:
+      var gameSound = new Audio("sound/game-sound.mp3");
+      gameSound.loop = true;
+      gameSound.play();
+      break;
+    default:
+      break;
+  }
+}
 
 function setTimeLeft() {
   const loop = setInterval(setTime, 1000);
@@ -398,34 +425,6 @@ function checkMoreLineY(p1, p2, type) {
   return false;
 }
 
-function drawMatrix() {
-  let matrix = [];
-  let temp = [];
-
-  for (let i = 0; i < boardSize + 2; i++) {
-    for (let j = 0; j < boardSize + 2; j++) {
-      temp.push(random(1, boardSize));
-    }
-    matrix[i] = temp;
-    temp = [];
-  }
-
-  matrix.map((x) => (x[0] = 0));
-  matrix.map((x) => (x[boardSize + 1] = 0));
-  matrix.forEach(function (a, i) {
-    if (i === 0 || i === boardSize + 1) {
-      let t = [];
-      for (let j = 0; j < boardSize + 2; j++) {
-        t.push(0);
-      }
-      matrix[i].splice(0, matrix[i].length);
-      matrix[i] = t;
-      t = [];
-    }
-  });
-  twoDimensionalArray = matrix;
-}
-
 function drawBoard(size) {
   let rowNum = Number(size);
   let colNum = Number(size);
@@ -451,7 +450,6 @@ function drawBoard(size) {
       for (let j = 0; j < boardSize + 2; j++) {
         t.push(0);
       }
-      matrix[i].splice(0, matrix[i].length);
       matrix[i] = t;
       t = [];
     }
@@ -462,7 +460,6 @@ function drawBoard(size) {
     let currentRow = $("<tr></tr>").appendTo(table);
     for (let col = 1; col < colNum + 1; col++) {
       let randomVal = matrix[rowIndex][col];
-      // arr.push(randomVal);
       let img =
         "<img width='50' height='50' src='image/" + randomVal + ".png'/>";
       currentRow.append(
@@ -477,8 +474,6 @@ function drawBoard(size) {
           "</td>"
       );
     }
-    // twoDimensionalArray[rowIndex] = arr;
-    // arr = [];
     $("#board").html(table);
   }
 }

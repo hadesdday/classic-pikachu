@@ -13,6 +13,7 @@ $(() => {
   setScore(correct);
   setGameTime();
   setTimeLeft();
+  // drawMatrix();
 });
 
 $("#shuffle").click(() => {
@@ -121,7 +122,8 @@ function select(elm) {
   let col = elm.getAttribute("col");
   let val = elm.getAttribute("value");
 
-  console.log("selecting now ", row, col, twoDimensionalArray[row][col]);
+  let now = twoDimensionalArray[row][col];
+  console.log("selecting now ", { row, col, now });
 
   elm.style.opacity = "0.5";
 
@@ -174,17 +176,12 @@ function checkTwoPoint(first, second) {
   var secondVal = Number(second.getAttribute("value"));
 
   if (firstVal === secondVal) {
-    if (
-      firstRow === secondRow &&
-      checkLineX(firstCol, secondCol, first.getAttribute("row"))
-    ) {
+    console.log({ firstRow, firstCol, secondRow, secondCol });
+    if (firstRow === secondRow && checkLineX(firstCol, secondCol, firstRow)) {
       return true;
     }
 
-    if (
-      firstCol === secondCol &&
-      checkLineY(firstRow, secondRow, first.getAttribute("col"))
-    ) {
+    if (firstCol === secondCol && checkLineY(firstRow, secondRow, firstCol)) {
       return true;
     }
 
@@ -326,6 +323,10 @@ function checkMoreLineX(p1, p2, type) {
       row
     )
   ) {
+    var n1 = Number(pMinY.getAttribute("row"));
+    var n2 = Number(pMaxY.getAttribute("row"));
+    console.log({ n1, n2 });
+
     while (
       twoDimensionalArray[Number(pMinY.getAttribute("row"))][y] === 0 &&
       twoDimensionalArray[Number(pMaxY.getAttribute("row"))][y] === 0
@@ -358,11 +359,15 @@ function checkMoreLineY(p1, p2, type) {
   var col = Number(pMinX.getAttribute("col"));
   var rowFinish = Number(pMaxX.getAttribute("row"));
 
+  console.log("before ", { x, col, rowFinish, type });
+
   if (type === -1) {
     rowFinish = Number(pMinX.getAttribute("row"));
     x = Number(pMinX.getAttribute("row")) + Number(type);
     col = Number(pMaxX.getAttribute("col"));
   }
+
+  console.log("after ", { x, col, rowFinish, type });
 
   if (
     (twoDimensionalArray[rowFinish][col] === 0 ||
@@ -393,18 +398,71 @@ function checkMoreLineY(p1, p2, type) {
   return false;
 }
 
+function drawMatrix() {
+  let matrix = [];
+  let temp = [];
+
+  for (let i = 0; i < boardSize + 2; i++) {
+    for (let j = 0; j < boardSize + 2; j++) {
+      temp.push(random(1, boardSize));
+    }
+    matrix[i] = temp;
+    temp = [];
+  }
+
+  matrix.map((x) => (x[0] = 0));
+  matrix.map((x) => (x[boardSize + 1] = 0));
+  matrix.forEach(function (a, i) {
+    if (i === 0 || i === boardSize + 1) {
+      let t = [];
+      for (let j = 0; j < boardSize + 2; j++) {
+        t.push(0);
+      }
+      matrix[i].splice(0, matrix[i].length);
+      matrix[i] = t;
+      t = [];
+    }
+  });
+  twoDimensionalArray = matrix;
+}
+
 function drawBoard(size) {
   let rowNum = Number(size);
   let colNum = Number(size);
 
   let table = $("<table border='1'></table>");
-  let arr = [];
 
-  for (let rowIndex = 0; rowIndex < rowNum; rowIndex++) {
+  let matrix = [];
+  let temp = [];
+
+  for (let i = 0; i < boardSize + 2; i++) {
+    for (let j = 0; j < boardSize + 2; j++) {
+      temp.push(random(1, boardSize));
+    }
+    matrix[i] = temp;
+    temp = [];
+  }
+
+  matrix.map((x) => (x[0] = 0));
+  matrix.map((x) => (x[boardSize + 1] = 0));
+  matrix.forEach(function (a, i) {
+    if (i === 0 || i === boardSize + 1) {
+      let t = [];
+      for (let j = 0; j < boardSize + 2; j++) {
+        t.push(0);
+      }
+      matrix[i].splice(0, matrix[i].length);
+      matrix[i] = t;
+      t = [];
+    }
+  });
+  twoDimensionalArray = matrix;
+
+  for (let rowIndex = 1; rowIndex < rowNum + 1; rowIndex++) {
     let currentRow = $("<tr></tr>").appendTo(table);
-    for (let col = 0; col < colNum; col++) {
-      let randomVal = random(1, size);
-      arr.push(randomVal);
+    for (let col = 1; col < colNum + 1; col++) {
+      let randomVal = matrix[rowIndex][col];
+      // arr.push(randomVal);
       let img =
         "<img width='50' height='50' src='image/" + randomVal + ".png'/>";
       currentRow.append(
@@ -419,8 +477,8 @@ function drawBoard(size) {
           "</td>"
       );
     }
-    twoDimensionalArray[rowIndex] = arr;
-    arr = [];
+    // twoDimensionalArray[rowIndex] = arr;
+    // arr = [];
     $("#board").html(table);
   }
 }

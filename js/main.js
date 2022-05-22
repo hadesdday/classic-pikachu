@@ -138,10 +138,13 @@ function select(elm) {
       array = [];
     } else if (
       first.getAttribute("value") === second.getAttribute("value") &&
-      (first.getAttribute("quizz", true) || second.getAttribute("quizz", true))
+      (first.getAttribute("quiz", true) || second.getAttribute("quiz", true))
     ) {
-      createQuizz(level);
+      createQuiz(level);
       $(".random-question").css("display", "block");
+      $("td").each(function () {
+        this.style.pointerEvents = "none";
+      });
       $("#submit-answer").click(() => {
         var isCorrectAnswer = checkCorrectAnswer();
         if (isCorrectAnswer && checkTwoPoint(first, second)) {
@@ -159,12 +162,14 @@ function select(elm) {
           first.setAttribute("selected", true);
           second.setAttribute("selected", true);
 
-          first.setAttribute("quizz", false);
-          second.setAttribute("quizz", false);
-
+          first.setAttribute("quiz", false);
+          second.setAttribute("quiz", false);
+          $("td").each(function () {
+            this.style.pointerEvents = "auto";
+          });
           $(".random-question").css("display", "none");
         } else {
-          createQuizz(5);
+          createQuiz(5);
         }
       });
     } else if (checkTwoPoint(first, second)) {
@@ -487,9 +492,9 @@ function drawBoard(size) {
   for (let i = 0; i < level + 3; i++) {
     var randomValue = random(0, boardSize);
     var td = $("td").eq(randomValue);
-    td.attr("quizz", true);
+    td.attr("quiz", true);
   }
-  console.log($("td[quizz='true']"));
+  console.log($("td[quiz='true']"));
 }
 
 function checkCorrectAnswer() {
@@ -518,7 +523,7 @@ function operatorCalculate(a, b, o) {
   }
 }
 
-function createQuizz(level) {
+function createQuiz(level) {
   var operator = ["+", "-", "*", "/"];
   if (level < 3) {
     var randOp = operator[random(0, operator.length - 2)];

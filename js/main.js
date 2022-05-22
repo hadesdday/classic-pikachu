@@ -3,18 +3,17 @@ var level = 1;
 var array = [];
 var twoDimensionalArray = [];
 var square;
-var correct = 0;
-var time = 99999;
+var score = 0;
+var time = 999999;
 var ogTime = 300;
 var isWin = false;
 
 $(() => {
   setLevel(level);
   drawBoard(boardSize);
-  setScore(correct);
+  setScore(score);
   setGameTime();
   setTimeLeft();
-  playSound(3);
 });
 
 $("#shuffle").click(() => {
@@ -30,28 +29,27 @@ $("#showTwoDimensionalArray").click(function () {
 });
 
 $("#increaseLevel").click(() => {
-  var s = (level % 3) + 1;
+  isWin = false;
   time = ogTime + 50;
   ogTime = time;
   setLevel((level += 1));
-  drawBoard((boardSize += s));
-  setScore(correct);
+  drawBoard((boardSize += 2));
+  setScore(score);
   setGameTime();
   setTimeLeft();
   $("#increaseLevel").css("visibility", "hidden");
-  isWin = false;
 });
 
 $("#restart").click(() => {
   level = 1;
   boardSize = 6;
-  correct = 0;
+  score = 0;
   array = [];
   time = 300;
   ogTime = time;
   setLevel(level);
   drawBoard(boardSize);
-  setScore(correct);
+  setScore(score);
   setGameTime();
   setTimeLeft();
   $("#restart").css("visibility", "hidden");
@@ -62,30 +60,6 @@ $("#restart").click(() => {
 $("#showArray").click(() => {
   console.log("array ", array);
 });
-
-function playSound(key) {
-  switch (Number(key)) {
-    case 0:
-      var clickSound = new Audio("sound/click.mp3");
-      clickSound.play();
-      break;
-    case 1:
-      var newGameSound = new Audio("sound/new-game.mp3");
-      newGameSound.play();
-      break;
-    case 2:
-      var wrongSound = new Audio("sound/wrong.mp3");
-      wrongSound.play();
-      break;
-    case 3:
-      var gameSound = new Audio("sound/game-sound.mp3");
-      gameSound.loop = true;
-      gameSound.play();
-      break;
-    default:
-      break;
-  }
-}
 
 function setTimeLeft() {
   const loop = setInterval(setTime, 1000);
@@ -162,6 +136,37 @@ function select(elm) {
 
     if (array[0] == array[1]) {
       array = [];
+    } else if (
+      first.getAttribute("value") === second.getAttribute("value") &&
+      (first.getAttribute("quizz", true) || second.getAttribute("quizz", true))
+    ) {
+      createQuizz(level);
+      $(".random-question").css("display", "block");
+      $("#submit-answer").click(() => {
+        var isCorrectAnswer = checkCorrectAnswer();
+        if (isCorrectAnswer && checkTwoPoint(first, second)) {
+          twoDimensionalArray[first.getAttribute("row")][
+            first.getAttribute("col")
+          ] = 0;
+          twoDimensionalArray[second.getAttribute("row")][
+            second.getAttribute("col")
+          ] = 0;
+
+          score += 100;
+          setScore(score);
+          first.style.visibility = "hidden";
+          second.style.visibility = "hidden";
+          first.setAttribute("selected", true);
+          second.setAttribute("selected", true);
+
+          first.setAttribute("quizz", false);
+          second.setAttribute("quizz", false);
+
+          $(".random-question").css("display", "none");
+        } else {
+          createQuizz(5);
+        }
+      });
     } else if (checkTwoPoint(first, second)) {
       twoDimensionalArray[first.getAttribute("row")][
         first.getAttribute("col")
@@ -170,8 +175,8 @@ function select(elm) {
         second.getAttribute("col")
       ] = 0;
 
-      correct += 100;
-      setScore(correct);
+      score += 100;
+      setScore(score);
       first.style.visibility = "hidden";
       second.style.visibility = "hidden";
       first.setAttribute("selected", true);
@@ -203,43 +208,45 @@ function checkTwoPoint(first, second) {
   var secondVal = Number(second.getAttribute("value"));
 
   if (firstVal === secondVal) {
-    console.log({ firstRow, firstCol, secondRow, secondCol });
-    if (firstRow === secondRow && checkLineX(firstCol, secondCol, firstRow)) {
+    if (firstRow === secondRow && checkOnRow(firstCol, secondCol, firstRow)) {
       return true;
     }
 
-    if (firstCol === secondCol && checkLineY(firstRow, secondRow, firstCol)) {
+    if (
+      firstCol === secondCol &&
+      checkOnColumn(firstRow, secondRow, firstCol)
+    ) {
       return true;
     }
 
-    if (checkSquareX(first, second)) {
+    if (checkRowSquare(first, second)) {
       return true;
     }
 
-    if (checkSquareY(first, second)) {
+    if (checkColumnSquare(first, second)) {
       return true;
     }
 
-    if (checkMoreLineX(first, second, 1)) {
+    if (checkOnRowByBorder(first, second, 1)) {
       return true;
     }
 
-    if (checkMoreLineX(first, second, -1)) {
+    if (checkOnRowByBorder(first, second, -1)) {
       return true;
     }
 
-    if (checkMoreLineY(first, second, 1)) {
+    if (checkOnColumnByBorder(first, second, 1)) {
       return true;
     }
 
-    if (checkMoreLineY(first, second, -1)) {
+    if (checkOnColumnByBorder(first, second, -1)) {
       return true;
     }
   }
   return false;
 }
 
-function checkLineX(x, y, row) {
+function checkOnRow(x, y, row) {
   let min = Math.min(x, y);
   let max = Math.max(x, y);
 
@@ -251,7 +258,7 @@ function checkLineX(x, y, row) {
   return true;
 }
 
-function checkLineY(x, y, col) {
+function checkOnColumn(x, y, col) {
   let min = Math.min(x, y);
   let max = Math.max(x, y);
 
@@ -263,7 +270,7 @@ function checkLineY(x, y, col) {
   return true;
 }
 
-function checkSquareX(x, y) {
+function checkRowSquare(x, y) {
   let minY = x;
   let maxY = y;
 
@@ -283,8 +290,8 @@ function checkSquareX(x, y) {
     }
     if (
       twoDimensionalArray[maxRow][i] === 0 &&
-      checkLineY(minRow, maxRow, i) &&
-      checkLineX(i, maxCol, maxRow)
+      checkOnColumn(minRow, maxRow, i) &&
+      checkOnRow(i, maxCol, maxRow)
     ) {
       return true;
     }
@@ -292,7 +299,7 @@ function checkSquareX(x, y) {
   return false;
 }
 
-function checkSquareY(x, y) {
+function checkColumnSquare(x, y) {
   let minX = x;
   let maxX = y;
 
@@ -312,8 +319,8 @@ function checkSquareY(x, y) {
     }
     if (
       twoDimensionalArray[z][maxCol] === 0 &&
-      checkLineX(minCol, maxCol, z) &&
-      checkLineY(z, maxRow, maxCol)
+      checkOnRow(minCol, maxCol, z) &&
+      checkOnColumn(z, maxRow, maxCol)
     ) {
       return true;
     }
@@ -321,7 +328,7 @@ function checkSquareY(x, y) {
   return false;
 }
 
-function checkMoreLineX(p1, p2, type) {
+function checkOnRowByBorder(p1, p2, type) {
   let pMinY = p1;
   let pMaxY = p2;
 
@@ -344,7 +351,7 @@ function checkMoreLineX(p1, p2, type) {
     (twoDimensionalArray[row][colFinish] === 0 ||
       Number(pMinY.getAttribute("col")) ===
         Number(pMaxY.getAttribute("col"))) &&
-    checkLineX(
+    checkOnRow(
       Number(pMinY.getAttribute("col")),
       Number(pMaxY.getAttribute("col")),
       row
@@ -359,7 +366,7 @@ function checkMoreLineX(p1, p2, type) {
       twoDimensionalArray[Number(pMaxY.getAttribute("row"))][y] === 0
     ) {
       if (
-        checkLineY(
+        checkOnColumn(
           Number(pMinY.getAttribute("row")),
           Number(pMaxY.getAttribute("row")),
           y
@@ -373,7 +380,7 @@ function checkMoreLineX(p1, p2, type) {
   return false;
 }
 
-function checkMoreLineY(p1, p2, type) {
+function checkOnColumnByBorder(p1, p2, type) {
   var pMinX = p1;
   var pMaxX = p2;
 
@@ -400,7 +407,7 @@ function checkMoreLineY(p1, p2, type) {
     (twoDimensionalArray[rowFinish][col] === 0 ||
       Number(pMinX.getAttribute("row")) ===
         Number(pMaxX.getAttribute("row"))) &&
-    checkLineY(
+    checkOnColumn(
       Number(pMinX.getAttribute("row")),
       Number(pMaxX.getAttribute("row")),
       col
@@ -411,7 +418,7 @@ function checkMoreLineY(p1, p2, type) {
       twoDimensionalArray[x][Number(pMaxX.getAttribute("col"))] === 0
     ) {
       if (
-        checkLineX(
+        checkOnRow(
           Number(pMinX.getAttribute("col")),
           Number(pMaxX.getAttribute("col")),
           x
@@ -426,8 +433,8 @@ function checkMoreLineY(p1, p2, type) {
 }
 
 function drawBoard(size) {
-  let rowNum = Number(size);
-  let colNum = Number(size);
+  let rowNum = Number(size) + 1;
+  let colNum = Number(size) + 1;
 
   let table = $("<table border='1'></table>");
 
@@ -456,9 +463,9 @@ function drawBoard(size) {
   });
   twoDimensionalArray = matrix;
 
-  for (let rowIndex = 1; rowIndex < rowNum + 1; rowIndex++) {
+  for (let rowIndex = 1; rowIndex < rowNum; rowIndex++) {
     let currentRow = $("<tr></tr>").appendTo(table);
-    for (let col = 1; col < colNum + 1; col++) {
+    for (let col = 1; col < colNum; col++) {
       let randomVal = matrix[rowIndex][col];
       let img =
         "<img width='50' height='50' src='image/" + randomVal + ".png'/>";
@@ -476,4 +483,53 @@ function drawBoard(size) {
     }
     $("#board").html(table);
   }
+
+  for (let i = 0; i < level + 3; i++) {
+    var randomValue = random(0, boardSize);
+    var td = $("td").eq(randomValue);
+    td.attr("quizz", true);
+  }
+  console.log($("td[quizz='true']"));
+}
+
+function checkCorrectAnswer() {
+  var numA = Number($("#numA").text());
+  var operator = $("#operator").text();
+  var numB = Number($("#numB").text());
+  var result = operatorCalculate(numA, numB, operator);
+
+  var answer = Number($("input[name='answer']").val());
+  if (answer === result) {
+    return true;
+  }
+  return false;
+}
+
+function operatorCalculate(a, b, o) {
+  switch (o) {
+    case "+":
+      return a + b;
+    case "-":
+      return a - b;
+    case "*":
+      return a * b;
+    case "/":
+      return a / b;
+  }
+}
+
+function createQuizz(level) {
+  var operator = ["+", "-", "*", "/"];
+  if (level < 3) {
+    var randOp = operator[random(0, operator.length - 2)];
+  } else {
+    var randOp = operator[random(0, operator.length)];
+  }
+
+  var a = random(0, 100);
+  var b = random(0, 100);
+
+  $("#numA").text(a);
+  $("#operator").text(randOp);
+  $("#numB").text(b);
 }

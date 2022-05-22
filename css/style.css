@@ -58,7 +58,7 @@ img:hover {
   position: absolute;
   width: 8%;
   padding: 1% 1%;
-  top: 55%;
+  top: 65%;
   left: 46%;
   border: none;
   box-shadow: 0 5px 5px black;
@@ -78,10 +78,27 @@ img:hover {
   padding: 50px;
   background: linear-gradient(to bottom, white, red);
   position: absolute;
-  top: 38%;
+  top: 45%;
   left: 37%;
 }
 .modal p {
+  text-align: center;
+  font-family: "Press Start 2P", cursive;
+  color: #fef2bf;
+}
+
+.random-question {
+  display: none;
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  padding: 50px;
+  background: linear-gradient(to bottom, white, red);
+  position: absolute;
+  top: 45%;
+  left: 37%;
+}
+.random-question p {
   text-align: center;
   font-family: "Press Start 2P", cursive;
   color: #fef2bf;

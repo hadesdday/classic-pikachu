@@ -28,11 +28,18 @@
             <p id="totalScore"></p>
             <p>Restart ?</p>
         </div>
+        <div class="random-question">
+            <p id="question">
+                <span id="numA"></span>
+                <span id="operator"></span>
+                <span id="numB"></span>
+                <span> = ?</span>
+            </p>
+            <input type="text" name="answer" placeholder="Your answer">
+            <button id="submit-answer">Submit</button>
+        </div>
         <button id="increaseLevel">Next level</button>
         <button id="restart">Restart</button>
-        <audio autoplay>
-            <source src="sound/game-sound.mp3" type="audio/mpeg">
-        </audio>
         <div id="board">
         </div>
     </div>

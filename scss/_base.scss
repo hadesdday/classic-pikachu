@@ -17,19 +17,14 @@ body {
   height: 100%;
   background: #011f3f;
   padding-bottom: 100%;
+  padding-top: 20px;
 }
 
-.heading {
-  h1,
-  #time {
-    font-family: "Press Start 2P", cursive !important;
-    color: #fef2bf;
-    text-align: center;
-  }
-}
-#board {
-  display: flex;
-  justify-content: center;
+h1,
+#time {
+  font-family: "Press Start 2P", cursive !important;
+  color: #fef2bf;
+  text-align: center;
 }
 
 img {
@@ -60,7 +55,7 @@ img {
   position: absolute;
   width: 8%;
   padding: 1% 1%;
-  top: 65%;
+  top: 50%;
   left: 46%;
   border: none;
   box-shadow: 0 5px 5px black;
@@ -80,7 +75,7 @@ img {
   padding: 50px;
   background: linear-gradient(to bottom, white, red);
   position: absolute;
-  top: 45%;
+  top: 30%;
   left: 37%;
   p {
     text-align: center;
@@ -89,19 +84,39 @@ img {
   }
 }
 
-.random-question {
-  display: none;
-  position: absolute;
-  width: 300px;
-  height: 200px;
-  padding: 50px;
-  background: linear-gradient(to bottom, white, red);
-  position: absolute;
-  top: 45%;
-  left: 37%;
-  p {
-    text-align: center;
-    font-family: "Press Start 2P", cursive;
-    color: #fef2bf;
+.main-game {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  .left-side {
+    width: 30%;
+    margin: 5%;
   }
+  .game-frame {
+    width: 70%;
+    margin: 5%;
+  }
+}
+
+.level {
+  padding: 5px;
+  margin: 10px;
+  background: #5e5df0;
+  border-radius: 999px;
+  box-shadow: #5e5df0 0 10px 20px -10px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  opacity: 1;
+  outline: 0 solid transparent;
+  padding: 8px 18px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: fit-content;
+  word-break: break-word;
+  border: 0;
 }

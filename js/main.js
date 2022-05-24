@@ -1,12 +1,14 @@
-var boardSize = 6;
+var boardSize = 8;
 var level = 1;
 var array = [];
 var twoDimensionalArray = [];
 var square;
 var score = 0;
-var time = 999999;
+var time = 99999;
 var ogTime = 300;
 var isWin = false;
+var counter;
+var levelNow;
 
 $(() => {
   setLevel(level);
@@ -15,6 +17,91 @@ $(() => {
   setGameTime();
   setTimeLeft();
 });
+
+function shiftAllCellToStart() {
+  // var e = [
+  //   [0, 0, 0, 0, 0, 0, 0, 0],
+  //   [0, 0, 0, 3, 0, 0, 0, 0],
+  //   [0, 2, 0, 0, 0, 0, 4, 0],
+  //   [0, 5, 0, 0, 0, 1, 4, 0],
+  //   [0, 3, 0, 5, 0, 3, 4, 0],
+  //   [0, 5, 0, 0, 0, 2, 5, 0],
+  //   [0, 1, 1, 0, 1, 4, 4, 0],
+  //   [0, 0, 0, 0, 0, 0, 0, 0],
+  // ];
+  // var s = [
+  //   [3, 2, 4, 5, 1, 4, 3, 5],
+  //   [3, 4, 5, 2, 5, 1, 1, 1],
+  //   [4, 4],
+  // ];
+  var s = [];
+  var t = [];
+
+  for (let i = 0; i < twoDimensionalArray[0].length - 1; i++) {
+    t.push(0);
+  }
+
+  s.push(t);
+  t = [];
+
+  for (let i = 1; i < twoDimensionalArray.length - 1; i++) {
+    for (let j = 1; j < twoDimensionalArray.length - 1; j++) {
+      if (twoDimensionalArray[i][j] !== 0) {
+        t.push(twoDimensionalArray[i][j]);
+        if (t.length === twoDimensionalArray[0].length - 2) {
+          s.push(t);
+          t = [];
+        } else if (
+          i === twoDimensionalArray.length - 2 &&
+          j === twoDimensionalArray.length - 2 &&
+          t.length < twoDimensionalArray[0].length
+        ) {
+          s.push(t);
+          t = [];
+        }
+      }
+    }
+  }
+
+  s.map((x, i) => {
+    if (x.length < s[0].length) {
+      for (let i = x.length; i < s[0].length; i++) {
+        x.push(0);
+      }
+    }
+  });
+
+  s.forEach(function (a, i) {
+    if (a.length < twoDimensionalArray.length + 2) {
+      a.unshift(0);
+    }
+  });
+
+  if (s.length < twoDimensionalArray.length + 2) {
+    for (let i = 0; i < twoDimensionalArray[0].length; i++) {
+      t.push(0);
+    }
+    for (let j = s.length; j < twoDimensionalArray.length; j++) {
+      s.push(t);
+    }
+  }
+  t = [];
+  twoDimensionalArray = s;
+
+  $("td").each(function (index, elm) {
+    let row = elm.getAttribute("row");
+    let col = elm.getAttribute("col");
+    let val = s[row][col];
+    console.log({ row, col, val });
+    if (val !== 0) {
+      let child = $(elm).children();
+      let newSrc = "image/" + s[row][col] + ".png";
+      $(child).attr("src", newSrc);
+      $(elm).attr("selected", "false");
+    }
+    elm.setAttribute("value", val);
+  });
+}
 
 $("#shuffle").click(() => {
   shuffle();
@@ -40,9 +127,104 @@ $("#increaseLevel").click(() => {
   $("#increaseLevel").css("visibility", "hidden");
 });
 
+$("#cloneInc").click(() => {
+  isWin = false;
+  time = ogTime + 50;
+  ogTime = time;
+  setLevel((level += 1));
+  drawBoard((boardSize += 2));
+  setScore(score);
+  setGameTime();
+  setTimeLeft();
+});
+
+$(".level").click(function () {
+  let level = Number($(this).attr("level"));
+  switch (level) {
+    case 1:
+      clearInterval(counter);
+      isWin = false;
+      time = 300;
+      ogTime = time;
+      level = 1;
+      levelNow = level;
+      setLevel(level);
+      drawBoard((boardSize = 8));
+      setScore(score);
+      setGameTime();
+      setTimeLeft();
+      break;
+    case 2:
+      clearInterval(counter);
+      isWin = false;
+      time = 400;
+      ogTime = time;
+      level = 2;
+      levelNow = level;
+      setLevel(level);
+      drawBoard((boardSize = 10));
+      setScore(score);
+      setGameTime();
+      setTimeLeft();
+      break;
+    case 3:
+      clearInterval(counter);
+      isWin = false;
+      time = 500;
+      ogTime = time;
+      level = 3;
+      levelNow = level;
+      setLevel(level);
+      drawBoard((boardSize = 12));
+      setScore(score);
+      setGameTime();
+      setTimeLeft();
+      break;
+    case 4:
+      clearInterval(counter);
+      isWin = false;
+      time = 600;
+      ogTime = time;
+      level = 4;
+      levelNow = level;
+      setLevel(level);
+      drawBoard((boardSize = 14));
+      setScore(score);
+      setGameTime();
+      setTimeLeft();
+      break;
+    case 5:
+      clearInterval(counter);
+      isWin = false;
+      time = 700;
+      ogTime = time;
+      level = 5;
+      levelNow = level;
+      setLevel(level);
+      drawBoard((boardSize = 16));
+      setScore(score);
+      setGameTime();
+      setTimeLeft();
+      break;
+    case 6:
+      clearInterval(counter);
+      isWin = false;
+      time = 800;
+      ogTime = time;
+      level = 6;
+      levelNow = level;
+      setLevel(level);
+      drawBoard((boardSize = 18));
+      setScore(score);
+      setGameTime();
+      setTimeLeft();
+      break;
+  }
+});
+
 $("#restart").click(() => {
   level = 1;
-  boardSize = 6;
+  boardSize = 8;
   score = 0;
   array = [];
   time = 300;
@@ -64,11 +246,13 @@ $("#showArray").click(() => {
 function setTimeLeft() {
   const loop = setInterval(setTime, 1000);
 
+  counter = loop;
+
   function setTime() {
     if (time === 0) {
       $(".modal").css("display", "block");
       $("#restart").css("visibility", "visible");
-      $("td").css("visibility", "hidden");
+      $("table").css("visibility", "hidden");
       clearInterval(loop);
     } else if (isWin) {
       $("#increaseLevel").css("visibility", "visible");
@@ -136,42 +320,6 @@ function select(elm) {
 
     if (array[0] == array[1]) {
       array = [];
-    } else if (
-      first.getAttribute("value") === second.getAttribute("value") &&
-      (first.getAttribute("quiz", true) || second.getAttribute("quiz", true))
-    ) {
-      createQuiz(level);
-      $(".random-question").css("display", "block");
-      $("td").each(function () {
-        this.style.pointerEvents = "none";
-      });
-      $("#submit-answer").click(() => {
-        var isCorrectAnswer = checkCorrectAnswer();
-        if (isCorrectAnswer && checkTwoPoint(first, second)) {
-          twoDimensionalArray[first.getAttribute("row")][
-            first.getAttribute("col")
-          ] = 0;
-          twoDimensionalArray[second.getAttribute("row")][
-            second.getAttribute("col")
-          ] = 0;
-
-          score += 100;
-          setScore(score);
-          first.style.visibility = "hidden";
-          second.style.visibility = "hidden";
-          first.setAttribute("selected", true);
-          second.setAttribute("selected", true);
-
-          first.setAttribute("quiz", false);
-          second.setAttribute("quiz", false);
-          $("td").each(function () {
-            this.style.pointerEvents = "auto";
-          });
-          $(".random-question").css("display", "none");
-        } else {
-          createQuiz(5);
-        }
-      });
     } else if (checkTwoPoint(first, second)) {
       twoDimensionalArray[first.getAttribute("row")][
         first.getAttribute("col")
@@ -186,6 +334,10 @@ function select(elm) {
       second.style.visibility = "hidden";
       first.setAttribute("selected", true);
       second.setAttribute("selected", true);
+      if (typeof levelNow !== undefined && levelNow >= 2) {
+        shiftAllCellToStart();
+        reloadBoard();
+      }
     }
     first.style.opacity = 1;
     second.style.opacity = 1;
@@ -216,7 +368,6 @@ function checkTwoPoint(first, second) {
     if (firstRow === secondRow && checkOnRow(firstCol, secondCol, firstRow)) {
       return true;
     }
-
     if (
       firstCol === secondCol &&
       checkOnColumn(firstRow, secondRow, firstCol)
@@ -488,53 +639,33 @@ function drawBoard(size) {
     }
     $("#board").html(table);
   }
-
-  for (let i = 0; i < level + 3; i++) {
-    var randomValue = random(0, boardSize);
-    var td = $("td").eq(randomValue);
-    td.attr("quiz", true);
-  }
-  console.log($("td[quiz='true']"));
 }
 
-function checkCorrectAnswer() {
-  var numA = Number($("#numA").text());
-  var operator = $("#operator").text();
-  var numB = Number($("#numB").text());
-  var result = operatorCalculate(numA, numB, operator);
+function reloadBoard() {
+  let rowNum = Number(boardSize) + 1;
+  let colNum = Number(boardSize) + 1;
 
-  var answer = Number($("input[name='answer']").val());
-  if (answer === result) {
-    return true;
+  let table = $("<table border='1'></table>");
+
+  for (let rowIndex = 1; rowIndex < rowNum; rowIndex++) {
+    let currentRow = $("<tr></tr>").appendTo(table);
+    for (let col = 1; col < colNum; col++) {
+      let value = twoDimensionalArray[rowIndex][col];
+      if (value !== 0) {
+        let img = "<img width='50' height='50' src='image/" + value + ".png'/>";
+        currentRow.append(
+          "<td width='50px' height='50px' row='" +
+            rowIndex +
+            "' col='" +
+            col +
+            "' value='" +
+            value +
+            "' onclick='select(this)' selected='false'>" +
+            img +
+            "</td>"
+        );
+      }
+    }
+    $("#board").html(table);
   }
-  return false;
-}
-
-function operatorCalculate(a, b, o) {
-  switch (o) {
-    case "+":
-      return a + b;
-    case "-":
-      return a - b;
-    case "*":
-      return a * b;
-    case "/":
-      return a / b;
-  }
-}
-
-function createQuiz(level) {
-  var operator = ["+", "-", "*", "/"];
-  if (level < 3) {
-    var randOp = operator[random(0, operator.length - 2)];
-  } else {
-    var randOp = operator[random(0, operator.length)];
-  }
-
-  var a = random(0, 100);
-  var b = random(0, 100);
-
-  $("#numA").text(a);
-  $("#operator").text(randOp);
-  $("#numB").text(b);
 }

@@ -86,20 +86,19 @@ img:hover {
 .main-game {
   display: flex;
   justify-content: space-between;
-  margin: 0;
 }
 .main-game .left-side {
-  width: 30%;
+  width: 10%;
   margin: 5%;
 }
 .main-game .game-frame {
-  width: 70%;
-  margin: 5%;
+  width: 90%;
+  margin: 5% 10%;
 }
 
 .level {
   padding: 5px;
-  margin: 10px;
+  margin: 10px 28px;
   background: #5e5df0;
   border-radius: 999px;
   box-shadow: #5e5df0 0 10px 20px -10px;

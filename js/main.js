@@ -19,81 +19,63 @@ $(() => {
 });
 
 function shiftAllCellToStart() {
-  // var e = [
-  //   [0, 0, 0, 0, 0, 0, 0, 0],
-  //   [0, 0, 0, 3, 0, 0, 0, 0],
-  //   [0, 2, 0, 0, 0, 0, 4, 0],
-  //   [0, 5, 0, 0, 0, 1, 4, 0],
-  //   [0, 3, 0, 5, 0, 3, 4, 0],
-  //   [0, 5, 0, 0, 0, 2, 5, 0],
-  //   [0, 1, 1, 0, 1, 4, 4, 0],
-  //   [0, 0, 0, 0, 0, 0, 0, 0],
-  // ];
-  // var s = [
-  //   [3, 2, 4, 5, 1, 4, 3, 5],
-  //   [3, 4, 5, 2, 5, 1, 1, 1],
-  //   [4, 4],
-  // ];
-  var s = [];
+  let temp = [];
+
+  twoDimensionalArray.map((row) => {
+    let val = row.filter((x) => x !== 0);
+    temp.push(val);
+  });
+
+  var re = [];
   var t = [];
 
-  for (let i = 0; i < twoDimensionalArray[0].length - 1; i++) {
+  for (let i = 0; i < twoDimensionalArray.length; i++) {
     t.push(0);
   }
+  re.push(t);
 
-  s.push(t);
+  temp[0] = [...re[0]];
+  temp[twoDimensionalArray.length - 1] = [...re[0]];
+
   t = [];
 
-  for (let i = 1; i < twoDimensionalArray.length - 1; i++) {
-    for (let j = 1; j < twoDimensionalArray.length - 1; j++) {
-      if (twoDimensionalArray[i][j] !== 0) {
-        t.push(twoDimensionalArray[i][j]);
-        if (t.length === twoDimensionalArray[0].length - 2) {
-          s.push(t);
-          t = [];
-        } else if (
-          i === twoDimensionalArray.length - 2 &&
-          j === twoDimensionalArray.length - 2 &&
-          t.length < twoDimensionalArray[0].length
-        ) {
-          s.push(t);
-          t = [];
-        }
+  twoDimensionalArray.map((x) => {
+    x.map((b) => {
+      if (b !== 0) {
+        t.push(b);
       }
-    }
+    });
+  });
+
+  for (let i = 0; i < twoDimensionalArray.length - 2; i++) {
+    let slicedElm = t.splice(0, twoDimensionalArray.length - 2);
+    re.push(slicedElm);
   }
 
-  s.map((x, i) => {
-    if (x.length < s[0].length) {
-      for (let i = x.length; i < s[0].length; i++) {
+  re.map((x, i) => {
+    if (x.length < twoDimensionalArray.length) {
+      x.unshift(0);
+      for (let i = x.length; i < twoDimensionalArray.length; i++) {
         x.push(0);
       }
     }
   });
 
-  s.forEach(function (a, i) {
-    if (a.length < twoDimensionalArray.length + 2) {
-      a.unshift(0);
-    }
-  });
-
-  if (s.length < twoDimensionalArray.length + 2) {
-    for (let i = 0; i < twoDimensionalArray[0].length; i++) {
-      t.push(0);
-    }
-    for (let j = s.length; j < twoDimensionalArray.length; j++) {
-      s.push(t);
+  if (re.length < twoDimensionalArray.length) {
+    t = [...twoDimensionalArray[0]];
+    for (let i = re.length; i < twoDimensionalArray.length; i++) {
+      re.push(t);
     }
   }
   t = [];
-  twoDimensionalArray = s;
+
+  twoDimensionalArray = re;
 
   $("td").each(function (index, elm) {
     let row = elm.getAttribute("row");
     let col = elm.getAttribute("col");
-    let val = s[row][col];
-    console.log({ row, col, val });
-    if (val !== 0) {
+    let value = re[row][col];
+    if (value !== 0) {
       let child = $(elm).children();
       let newSrc = "image/" + s[row][col] + ".png";
       $(child).attr("src", newSrc);
@@ -334,8 +316,10 @@ function select(elm) {
       second.style.visibility = "hidden";
       first.setAttribute("selected", true);
       second.setAttribute("selected", true);
+      console.log("matrix before shifted ", twoDimensionalArray);
       if (typeof levelNow !== undefined && levelNow >= 2) {
         shiftAllCellToStart();
+        console.log("matrix after shifted ", twoDimensionalArray);
         reloadBoard();
       }
     }

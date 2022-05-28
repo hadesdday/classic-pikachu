@@ -77,11 +77,11 @@ function shiftAllCellToStart() {
     let value = re[row][col];
     if (value !== 0) {
       let child = $(elm).children();
-      let newSrc = "image/" + s[row][col] + ".png";
+      let newSrc = "image/" + re[row][col] + ".png";
       $(child).attr("src", newSrc);
       $(elm).attr("selected", "false");
     }
-    elm.setAttribute("value", val);
+    elm.setAttribute("value", value);
   });
 }
 
@@ -263,15 +263,24 @@ function random(min, max) {
 }
 
 function shuffle() {
-  $("td[selected='false'").each(function () {
+  let temp = [];
+
+  $("td[selected='false']").each(function () {
+    var val = this.getAttribute("value");
+    let now = val;
+    temp.push(now);
+  });
+
+  $("td[selected='false']").each(function () {
     var row = this.getAttribute("row");
     var col = this.getAttribute("col");
+    let randomIndex = Math.floor(Math.random() * temp.length);
+    let splicedElm = temp.splice(randomIndex, 1);
 
-    var shuffleValue = random(1, boardSize);
-    this.setAttribute("value", shuffleValue);
-    twoDimensionalArray[row][col] = shuffleValue;
+    this.setAttribute("value", splicedElm);
+    twoDimensionalArray[row][col] = splicedElm;
     var childElm = this.firstChild;
-    var src = "image/" + shuffleValue + ".png";
+    var src = "image/" + splicedElm + ".png";
     childElm.setAttribute("src", src);
   });
 }

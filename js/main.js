@@ -18,6 +18,36 @@ $(() => {
   setTimeLeft();
 });
 
+function randomValArray() {
+  let t = [];
+  let ranLeft = [];
+
+  for (let i = 1; i <= boardSize; i++) {
+    let x = {
+      index: i,
+      count: boardSize,
+    };
+    ranLeft.push(x);
+  }
+
+  while (t.length <= boardSize * boardSize) {
+    if (t.length === boardSize * boardSize) {
+      break;
+    }
+    let r = random(1, boardSize + 1);
+    ranLeft.map((z, i) => {
+      if (r === z.index && z.count <= boardSize && z.count > 0) {
+        t.push(r);
+        z.count -= 1;
+      }
+    });
+  }
+
+  console.log("left ", ranLeft);
+  console.log("T", t);
+  return t;
+}
+
 function shiftAllCellToStart() {
   let temp = [];
 
@@ -101,7 +131,9 @@ $("#increaseLevel").click(() => {
   isWin = false;
   time = ogTime + 50;
   ogTime = time;
-  setLevel((level += 1));
+  level += 1;
+  levelNow = level;
+  setLevel(level);
   drawBoard((boardSize += 2));
   setScore(score);
   setGameTime();
@@ -590,6 +622,9 @@ function drawBoard(size) {
   let matrix = [];
   let temp = [];
 
+  var randomValArr = randomValArray();
+  // console.log(randomValArr);
+
   for (let i = 0; i < boardSize + 2; i++) {
     for (let j = 0; j < boardSize + 2; j++) {
       temp.push(random(1, boardSize));
@@ -615,7 +650,8 @@ function drawBoard(size) {
   for (let rowIndex = 1; rowIndex < rowNum; rowIndex++) {
     let currentRow = $("<tr></tr>").appendTo(table);
     for (let col = 1; col < colNum; col++) {
-      let randomVal = matrix[rowIndex][col];
+      let randomVal = randomValArr.splice(0, 1);
+      // let randomVal = matrix[rowIndex][col];
       let img =
         "<img width='50' height='50' src='image/" + randomVal + ".png'/>";
       currentRow.append(

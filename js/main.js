@@ -4,7 +4,7 @@ var array = [];
 var twoDimensionalArray = [];
 var square;
 var score = 0;
-var time = 99999;
+var time = 1;
 var ogTime = 300;
 var isWin = false;
 var counter;
@@ -18,109 +18,8 @@ $(() => {
   setTimeLeft();
 });
 
-function randomValArray() {
-  let t = [];
-  let ranLeft = [];
-
-  for (let i = 1; i <= boardSize; i++) {
-    let x = {
-      index: i,
-      count: boardSize,
-    };
-    ranLeft.push(x);
-  }
-
-  while (t.length <= boardSize * boardSize) {
-    if (t.length === boardSize * boardSize) {
-      break;
-    }
-    let r = random(1, boardSize + 1);
-    ranLeft.map((z, i) => {
-      if (r === z.index && z.count <= boardSize && z.count > 0) {
-        t.push(r);
-        z.count -= 1;
-      }
-    });
-  }
-
-  console.log("left ", ranLeft);
-  console.log("T", t);
-  return t;
-}
-
-function shiftAllCellToStart() {
-  let temp = [];
-
-  twoDimensionalArray.map((row) => {
-    let val = row.filter((x) => x !== 0);
-    temp.push(val);
-  });
-
-  var re = [];
-  var t = [];
-
-  for (let i = 0; i < twoDimensionalArray.length; i++) {
-    t.push(0);
-  }
-  re.push(t);
-
-  temp[0] = [...re[0]];
-  temp[twoDimensionalArray.length - 1] = [...re[0]];
-
-  t = [];
-
-  twoDimensionalArray.map((x) => {
-    x.map((b) => {
-      if (b !== 0) {
-        t.push(b);
-      }
-    });
-  });
-
-  for (let i = 0; i < twoDimensionalArray.length - 2; i++) {
-    let slicedElm = t.splice(0, twoDimensionalArray.length - 2);
-    re.push(slicedElm);
-  }
-
-  re.map((x, i) => {
-    if (x.length < twoDimensionalArray.length) {
-      x.unshift(0);
-      for (let i = x.length; i < twoDimensionalArray.length; i++) {
-        x.push(0);
-      }
-    }
-  });
-
-  if (re.length < twoDimensionalArray.length) {
-    t = [...twoDimensionalArray[0]];
-    for (let i = re.length; i < twoDimensionalArray.length; i++) {
-      re.push(t);
-    }
-  }
-  t = [];
-
-  twoDimensionalArray = re;
-
-  $("td").each(function (index, elm) {
-    let row = elm.getAttribute("row");
-    let col = elm.getAttribute("col");
-    let value = re[row][col];
-    if (value !== 0) {
-      let child = $(elm).children();
-      let newSrc = "image/" + re[row][col] + ".png";
-      $(child).attr("src", newSrc);
-      $(elm).attr("selected", "false");
-    }
-    elm.setAttribute("value", value);
-  });
-}
-
 $("#shuffle").click(() => {
   shuffle();
-});
-
-$("#showAt").click(() => {
-  console.log(twoDimensionalArray[$("#rowS").val()][$("#colS").val()]);
 });
 
 $("#showTwoDimensionalArray").click(function () {
@@ -128,6 +27,7 @@ $("#showTwoDimensionalArray").click(function () {
 });
 
 $("#increaseLevel").click(() => {
+  clearInterval(counter);
   isWin = false;
   time = ogTime + 50;
   ogTime = time;
@@ -139,17 +39,6 @@ $("#increaseLevel").click(() => {
   setGameTime();
   setTimeLeft();
   $("#increaseLevel").css("visibility", "hidden");
-});
-
-$("#cloneInc").click(() => {
-  isWin = false;
-  time = ogTime + 50;
-  ogTime = time;
-  setLevel((level += 1));
-  drawBoard((boardSize += 2));
-  setScore(score);
-  setGameTime();
-  setTimeLeft();
 });
 
 $(".level").click(function () {
@@ -236,8 +125,22 @@ $(".level").click(function () {
   }
 });
 
-$("#restart").click(() => {
+$("#og-restart").click(function () {
+  restart();
+  $("#restart").css("visibility", "hidden");
+  $(".modal").css("display", "none");
+});
+
+$("#restart").click(function () {
+  restart();
+  $("#restart").css("visibility", "hidden");
+  $(".modal").css("display", "none");
+});
+
+function restart() {
+  clearInterval(counter);
   level = 1;
+  levelNow = level;
   boardSize = 8;
   score = 0;
   array = [];
@@ -248,14 +151,102 @@ $("#restart").click(() => {
   setScore(score);
   setGameTime();
   setTimeLeft();
-  $("#restart").css("visibility", "hidden");
-  $(".modal").css("display", "none");
   isWin = false;
-});
+}
 
-$("#showArray").click(() => {
-  console.log("array ", array);
-});
+function randomValArray() {
+  let t = [];
+  let ranLeft = [];
+
+  for (let i = 1; i <= boardSize; i++) {
+    let x = {
+      index: i,
+      count: boardSize,
+    };
+    ranLeft.push(x);
+  }
+
+  while (t.length <= boardSize * boardSize) {
+    if (t.length === boardSize * boardSize) {
+      break;
+    }
+    let r = random(1, boardSize + 1);
+    ranLeft.map((z, i) => {
+      if (r === z.index && z.count <= boardSize && z.count > 0) {
+        t.push(r);
+        z.count -= 1;
+      }
+    });
+  }
+  return t;
+}
+
+function shiftAllCellToStart() {
+  let temp = [];
+
+  twoDimensionalArray.map((row) => {
+    let val = row.filter((x) => x !== 0);
+    temp.push(val);
+  });
+
+  var re = [];
+  var t = [];
+
+  for (let i = 0; i < twoDimensionalArray.length; i++) {
+    t.push(0);
+  }
+  re.push(t);
+
+  temp[0] = [...re[0]];
+  temp[twoDimensionalArray.length - 1] = [...re[0]];
+
+  t = [];
+
+  twoDimensionalArray.map((x) => {
+    x.map((b) => {
+      if (b !== 0) {
+        t.push(b);
+      }
+    });
+  });
+
+  for (let i = 0; i < twoDimensionalArray.length - 2; i++) {
+    let slicedElm = t.splice(0, twoDimensionalArray.length - 2);
+    re.push(slicedElm);
+  }
+
+  re.map((x, i) => {
+    if (x.length < twoDimensionalArray.length) {
+      x.unshift(0);
+      for (let i = x.length; i < twoDimensionalArray.length; i++) {
+        x.push(0);
+      }
+    }
+  });
+
+  if (re.length < twoDimensionalArray.length) {
+    t = [...twoDimensionalArray[0]];
+    for (let i = re.length; i < twoDimensionalArray.length; i++) {
+      re.push(t);
+    }
+  }
+  t = [];
+
+  twoDimensionalArray = re;
+
+  $("td").each(function (index, elm) {
+    let row = elm.getAttribute("row");
+    let col = elm.getAttribute("col");
+    let value = re[row][col];
+    if (value !== 0) {
+      let child = $(elm).children();
+      let newSrc = "image/" + re[row][col] + ".png";
+      $(child).attr("src", newSrc);
+      $(elm).attr("selected", "false");
+    }
+    elm.setAttribute("value", value);
+  });
+}
 
 function setTimeLeft() {
   const loop = setInterval(setTime, 1000);

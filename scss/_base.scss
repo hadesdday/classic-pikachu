@@ -1,6 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
+%game-button {
+  padding: 5px;
+  background: #5e5df0;
+  border-radius: 999px;
+  box-shadow: #5e5df0 0 10px 20px -10px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  opacity: 1;
+  outline: 0 solid transparent;
+  padding: 8px 18px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: fit-content;
+  word-break: break-word;
+  border: 0;
+}
+
 html,
 body {
   height: 100%;
@@ -56,7 +78,8 @@ img {
   width: 8%;
   padding: 1% 1%;
   top: 50%;
-  left: 46%;
+  left: 44%;
+  z-index: 11;
   border: none;
   box-shadow: 0 5px 5px black;
   border-radius: 10px;
@@ -73,11 +96,15 @@ img {
   width: 300px;
   height: 200px;
   padding: 50px;
-  background: linear-gradient(to bottom, white, red);
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 5px 0px 10px 5px black;
   position: absolute;
   top: 30%;
   left: 37%;
+  z-index: 10;
   p {
+    text-transform: uppercase;
     text-align: center;
     font-family: "Press Start 2P", cursive;
     color: #fef2bf;
@@ -97,25 +124,11 @@ img {
   }
 }
 
-.level {
-  padding: 5px;
+button {
+  @extend %game-button;
   margin: 10px 28px;
-  background: #5e5df0;
-  border-radius: 999px;
-  box-shadow: #5e5df0 0 10px 20px -10px;
-  box-sizing: border-box;
-  color: #ffffff;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 24px;
-  opacity: 1;
-  outline: 0 solid transparent;
-  padding: 8px 18px;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: fit-content;
-  word-break: break-word;
-  border: 0;
+  transition: all 0.25s ease-in-out;
+  &:hover {
+    opacity: 0.5;
+  }
 }

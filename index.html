@@ -6,17 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Pokemon Game</title>
 </head>
 
 <body>
     <div class="container">
-        <button id="cloneInc">increase level</button>
-        <button id="showArray">show array</button>
-        <button id="shuffle">shuffle</button>
-        <input type="text" id="rowS" placeholder="row">
-        <input type="text" id="colS" placeholder="col">
-        <button id="showAt">show at</button>
         <button id="showTwoDimensionalArray">show two dimensional array</button>
         <h1>Pokemon Game</h1>
         <div class="main-game">
@@ -25,6 +22,8 @@
                     <h1 id="level-title"></h1>
                     <h1 id="score"></h1>
                     <h1>Time <span id="time"></span></h1>
+                    <button id="shuffle"><i class="fa-solid fa-shuffle"></i>Shuffle</button>
+                    <button id="og-restart"><i class="fa-solid fa-shuffle"></i>Restart</button>
                     <div class="levels">
                         <button class="level" level="1">Level 1</button>
                         <button class="level" level="2">Level 2</button>
@@ -35,7 +34,7 @@
                     </div>
                 </div>
                 <div class="modal">
-                    <p>GAME OVER</p>
+                    <p>game over</p>
                     <p id="totalScore"></p>
                     <p>Restart ?</p>
                 </div>

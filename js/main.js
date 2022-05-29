@@ -4,7 +4,7 @@ var array = [];
 var twoDimensionalArray = [];
 var square;
 var score = 0;
-var time = 1;
+var time = 300;
 var ogTime = 300;
 var isWin = false;
 var counter;
@@ -38,104 +38,53 @@ $("#increaseLevel").click(() => {
   setScore(score);
   setGameTime();
   setTimeLeft();
-  $("#increaseLevel").css("visibility", "hidden");
+  $(".win-modal").css("display", "none");
 });
 
 $(".level").click(function () {
   let level = Number($(this).attr("level"));
   switch (level) {
     case 1:
-      clearInterval(counter);
-      isWin = false;
-      time = 300;
-      ogTime = time;
-      level = 1;
-      levelNow = level;
-      setLevel(level);
-      drawBoard((boardSize = 8));
-      setScore(score);
-      setGameTime();
-      setTimeLeft();
+      setFixedLevel(300, 1, 8);
       break;
     case 2:
-      clearInterval(counter);
-      isWin = false;
-      time = 400;
-      ogTime = time;
-      level = 2;
-      levelNow = level;
-      setLevel(level);
-      drawBoard((boardSize = 10));
-      setScore(score);
-      setGameTime();
-      setTimeLeft();
+      setFixedLevel(400, 2, 10);
       break;
     case 3:
-      clearInterval(counter);
-      isWin = false;
-      time = 500;
-      ogTime = time;
-      level = 3;
-      levelNow = level;
-      setLevel(level);
-      drawBoard((boardSize = 12));
-      setScore(score);
-      setGameTime();
-      setTimeLeft();
+      setFixedLevel(500, 3, 12);
       break;
     case 4:
-      clearInterval(counter);
-      isWin = false;
-      time = 600;
-      ogTime = time;
-      level = 4;
-      levelNow = level;
-      setLevel(level);
-      drawBoard((boardSize = 14));
-      setScore(score);
-      setGameTime();
-      setTimeLeft();
+      setFixedLevel(600, 4, 14);
       break;
     case 5:
-      clearInterval(counter);
-      isWin = false;
-      time = 700;
-      ogTime = time;
-      level = 5;
-      levelNow = level;
-      setLevel(level);
-      drawBoard((boardSize = 16));
-      setScore(score);
-      setGameTime();
-      setTimeLeft();
+      setFixedLevel(700, 5, 16);
       break;
     case 6:
-      clearInterval(counter);
-      isWin = false;
-      time = 800;
-      ogTime = time;
-      level = 6;
-      levelNow = level;
-      setLevel(level);
-      drawBoard((boardSize = 18));
-      setScore(score);
-      setGameTime();
-      setTimeLeft();
+      setFixedLevel(800, 6, 18);
       break;
   }
 });
 
-$("#og-restart").click(function () {
+$(".restart").click(function () {
   restart();
-  $("#restart").css("visibility", "hidden");
+  $(".win-modal").css("display", "none");
   $(".modal").css("display", "none");
 });
 
-$("#restart").click(function () {
-  restart();
-  $("#restart").css("visibility", "hidden");
-  $(".modal").css("display", "none");
-});
+function setFixedLevel(t, lvl, bs) {
+  clearInterval(counter);
+  isWin = false;
+  time = Number(t);
+  ogTime = time;
+  level = Number(lvl);
+  levelNow = level;
+  boardSize = Number(bs);
+  setLevel(level);
+  drawBoard(boardSize);
+  setScore(score);
+  setGameTime();
+  setTimeLeft();
+}
 
 function restart() {
   clearInterval(counter);
@@ -171,7 +120,7 @@ function randomValArray() {
       break;
     }
     let r = random(1, boardSize + 1);
-    ranLeft.map((z, i) => {
+    ranLeft.map((z) => {
       if (r === z.index && z.count <= boardSize && z.count > 0) {
         t.push(r);
         z.count -= 1;
@@ -215,7 +164,7 @@ function shiftAllCellToStart() {
     re.push(slicedElm);
   }
 
-  re.map((x, i) => {
+  re.map((x) => {
     if (x.length < twoDimensionalArray.length) {
       x.unshift(0);
       for (let i = x.length; i < twoDimensionalArray.length; i++) {
@@ -311,7 +260,8 @@ function shuffle() {
 function checkAllCell() {
   var selectedCells = $("td[selected='true'");
   if (selectedCells.length === boardSize * boardSize) {
-    $("#increaseLevel").css("visibility", "visible");
+    $("table").remove();
+    $(".win-modal").css("display", "block");
     isWin = true;
   }
 }
@@ -324,7 +274,7 @@ function select(elm) {
   let now = twoDimensionalArray[row][col];
   console.log("selecting now ", { row, col, now });
 
-  elm.style.opacity = "0.5";
+  elm.style.opacity = 0.5;
 
   array.push(elm);
 
@@ -614,7 +564,6 @@ function drawBoard(size) {
   let temp = [];
 
   var randomValArr = randomValArray();
-  // console.log(randomValArr);
 
   for (let i = 0; i < boardSize + 2; i++) {
     for (let j = 0; j < boardSize + 2; j++) {
@@ -644,7 +593,9 @@ function drawBoard(size) {
       let randomVal = randomValArr.splice(0, 1);
       // let randomVal = matrix[rowIndex][col];
       let img =
-        "<img width='50' height='50' src='image/" + randomVal + ".png'/>";
+        "<img width='50' height='50' class='game__cell' src='image/" +
+        randomVal +
+        ".png'/>";
       currentRow.append(
         "<td width='50px' height='50px' row='" +
           rowIndex +
@@ -672,7 +623,10 @@ function reloadBoard() {
     for (let col = 1; col < colNum; col++) {
       let value = twoDimensionalArray[rowIndex][col];
       if (value !== 0) {
-        let img = "<img width='50' height='50' src='image/" + value + ".png'/>";
+        let img =
+          "<img width='50' height='50' class='game__cell' src='image/" +
+          value +
+          ".png'/>";
         currentRow.append(
           "<td width='50px' height='50px' row='" +
             rowIndex +

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
         integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="shortcut icon" href="image/icon.png" type="image/x-icon">
     <title>Pokemon Game</title>
 </head>
 
@@ -22,8 +23,8 @@
                     <h1 id="level-title"></h1>
                     <h1 id="score"></h1>
                     <h1>Time <span id="time"></span></h1>
-                    <button id="shuffle"><i class="fa-solid fa-shuffle"></i>Shuffle</button>
-                    <button id="og-restart"><i class="fa-solid fa-shuffle"></i>Restart</button>
+                    <button id="shuffle" class="game-mode"><i class="fa-solid fa-shuffle"></i>Shuffle</button>
+                    <button class="game-mode restart"><i class="fa-solid fa-arrows-spin"></i>Restart</button>
                     <div class="levels">
                         <button class="level" level="1">Level 1</button>
                         <button class="level" level="2">Level 2</button>
@@ -34,12 +35,21 @@
                     </div>
                 </div>
                 <div class="modal">
+                    <img src="image/ghost.png" width="70" height="70">
                     <p>game over</p>
                     <p id="totalScore"></p>
                     <p>Restart ?</p>
+                    <button id="restart" class="restart">try again</button>
                 </div>
-                <button id="increaseLevel">Next level</button>
-                <button id="restart">Restart</button>
+
+                <div class="win-modal">
+                    <img src="image/pacman.ico">
+                    <p>you won this stage</p>
+                    <p>Go to next level ?</p>
+                    <button id="win-restart" class="restart">restart</button>
+                    <button id="increaseLevel">let's go</button>
+                </div>
+
             </div>
             <div class="game-frame">
                 <div id="board">

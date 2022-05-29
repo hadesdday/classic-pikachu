@@ -1,24 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
-button {
+.level,
+.game-mode {
   padding: 5px;
   background: #5e5df0;
-  border-radius: 999px;
   box-shadow: #5e5df0 0 10px 20px -10px;
-  box-sizing: border-box;
+  border-radius: 20px;
   color: #ffffff;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 105%;
   font-weight: 700;
-  line-height: 24px;
-  opacity: 1;
-  outline: 0 solid transparent;
+  outline: none;
   padding: 8px 18px;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: fit-content;
-  word-break: break-word;
+  width: 100%;
   border: 0;
 }
 
@@ -48,23 +42,30 @@ h1,
   text-align: center;
 }
 
-img {
+.game__cell {
   border: 1px solid black;
 }
-img:hover {
+.game__cell:hover {
   border: 1px solid red;
 }
 
 #increaseLevel {
   position: absolute;
-  width: 8%;
-  padding: 1% 1%;
-  top: 55%;
+  width: 30%;
+  padding: 3%;
   left: 47%;
   border: none;
-  box-shadow: 0 5px 5px black;
-  border-radius: 10px;
-  visibility: hidden;
+  background: #5e5df0;
+  box-shadow: #5e5df0 0 10px 20px -10px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s ease-in-out;
+}
+#increaseLevel:hover {
+  opacity: 0.8;
 }
 
 #increaseLevel:active {
@@ -72,17 +73,43 @@ img:hover {
   transform: translateY(5px);
 }
 
+#win-restart {
+  position: relative;
+  width: 30%;
+  padding: 4%;
+  left: 10%;
+  border: none;
+  background: #5e5df0;
+  box-shadow: #5e5df0 0 10px 20px -10px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s ease-in-out;
+}
+#win-restart:hover {
+  opacity: 0.8;
+}
+
 #restart {
-  position: absolute;
-  width: 8%;
-  padding: 1% 1%;
-  top: 50%;
-  left: 44%;
+  position: relative;
+  width: 40%;
+  padding: 5%;
+  background: #5e5df0;
+  box-shadow: #5e5df0 0 10px 20px -10px;
+  color: #fff;
+  left: 30%;
   z-index: 11;
   border: none;
-  box-shadow: 0 5px 5px black;
   border-radius: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.25s ease-in-out;
   visibility: hidden;
+}
+#restart:hover {
+  opacity: 0.5;
 }
 
 #restart:active {
@@ -92,22 +119,48 @@ img:hover {
 
 .modal {
   display: none;
-  width: 300px;
-  height: 200px;
+  width: 20%;
+  height: 30%;
   padding: 50px;
   background-color: white;
   border-radius: 6px;
-  box-shadow: 5px 0px 10px 5px black;
+  box-shadow: 3px 3px 100px 8px black;
   position: absolute;
   top: 30%;
   left: 37%;
   z-index: 10;
 }
+.modal img {
+  margin-left: 40%;
+}
 .modal p {
   text-transform: uppercase;
   text-align: center;
   font-family: "Press Start 2P", cursive;
-  color: #fef2bf;
+  color: #5e5df0;
+}
+
+.win-modal {
+  display: none;
+  width: 20%;
+  height: 30%;
+  padding: 50px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 3px 3px 100px 8px black;
+  position: absolute;
+  top: 30%;
+  left: 37%;
+  z-index: 10;
+}
+.win-modal img {
+  margin-left: 40%;
+}
+.win-modal p {
+  text-transform: uppercase;
+  text-align: center;
+  font-family: "Press Start 2P", cursive;
+  color: #5e5df0;
 }
 
 .main-game {
@@ -123,12 +176,18 @@ img:hover {
   margin: 5% 11%;
 }
 
-button {
-  margin: 10px 28px;
+.level,
+.game-mode {
+  margin: 10px 1px;
   transition: all 0.25s ease-in-out;
 }
-button:hover {
+.level:hover,
+.game-mode:hover {
   opacity: 0.5;
+}
+
+.game-mode i {
+  margin-right: 10px;
 }
 
 /*# sourceMappingURL=style.css.map */

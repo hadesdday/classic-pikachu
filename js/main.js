@@ -33,8 +33,9 @@ $("#increaseLevel").click(() => {
   ogTime = time;
   level += 1;
   levelNow = level;
+  boardSize += 2;
   setLevel(level);
-  drawBoard((boardSize += 2));
+  drawBoard(boardSize);
   setScore(score);
   setGameTime();
   setTimeLeft();
@@ -58,9 +59,11 @@ $(".level").click(function () {
       break;
     case 5:
       setFixedLevel(700, 5, 16);
+      addMiddleLine();
       break;
     case 6:
       setFixedLevel(800, 6, 18);
+      addFourDirectionLine();
       break;
   }
 });
@@ -70,6 +73,50 @@ $(".restart").click(function () {
   $(".win-modal").css("display", "none");
   $(".modal").css("display", "none");
 });
+
+function addFourDirectionLine() {
+  var midIndex = boardSize / 2;
+  let t = twoDimensionalArray[0];
+  twoDimensionalArray[midIndex] = t;
+  let c = midIndex + 1;
+
+  twoDimensionalArray.map((x) => {
+    x.map((__, i) => {
+      if (i === midIndex || i === c) {
+        x[i] = 0;
+      }
+    });
+  });
+
+  $("td").each(function () {
+    let row = Number(this.getAttribute("row"));
+    let col = Number(this.getAttribute("col"));
+    var childElm = this.firstChild;
+
+    if (row === midIndex || col === midIndex || col === c) {
+      $(this).removeAttr("onclick");
+      this.setAttribute("selected", true);
+      $(childElm).remove();
+    }
+  });
+}
+
+function addMiddleLine() {
+  let midIndex = boardSize / 2;
+  let t = twoDimensionalArray[0];
+  twoDimensionalArray[midIndex] = t;
+
+  $("td").each(function () {
+    let row = Number(this.getAttribute("row"));
+    var childElm = this.firstChild;
+
+    if (row === midIndex) {
+      $(this).removeAttr("onclick");
+      this.setAttribute("selected", true);
+      $(childElm).remove();
+    }
+  });
+}
 
 function setFixedLevel(t, lvl, bs) {
   clearInterval(counter);
@@ -329,15 +376,26 @@ function select(elm) {
       second.style.visibility = "hidden";
       first.setAttribute("selected", true);
       second.setAttribute("selected", true);
-      if (typeof levelNow !== undefined && levelNow >= 2) {
-        shiftAllCellToStart();
-        reloadBoard();
-      }
-      if (typeof levelNow !== undefined && levelNow >= 3) {
-        shuffle();
-      }
-      if (typeof levelNow !== undefined && levelNow >= 4) {
-        reverseBoard();
+
+      if (typeof levelNow !== undefined) {
+        if (levelNow === 2) {
+          shiftAllCellToStart();
+          reloadBoard();
+        }
+        if (levelNow === 3) {
+          shiftAllCellToStart();
+          reloadBoard();
+          shuffle();
+        }
+        if (levelNow === 4) {
+          shiftAllCellToStart();
+          reloadBoard();
+          shuffle();
+          reverseBoard();
+        }
+        if (levelNow === 5) {
+          shuffle();
+        }
       }
     }
     first.style.opacity = 1;
@@ -625,23 +683,25 @@ function drawBoard(size) {
   for (let rowIndex = 1; rowIndex < rowNum; rowIndex++) {
     let currentRow = $("<tr></tr>").appendTo(table);
     for (let col = 1; col < colNum; col++) {
-      let randomVal = Number(randomValArr.splice(0, 1)[0]);
-      // let randomVal = matrix[rowIndex][col];
-      let img =
-        "<img width='50' height='50' class='game__cell' src='image/" +
-        randomVal +
-        ".png'/>";
-      currentRow.append(
-        "<td width='50px' height='50px' row='" +
-          rowIndex +
-          "' col='" +
-          col +
-          "' value='" +
+      if (twoDimensionalArray[rowIndex][col] !== 0) {
+        let randomVal = Number(randomValArr.splice(0, 1)[0]);
+        twoDimensionalArray[rowIndex][col] = randomVal;
+        let img =
+          "<img width='50' height='50' class='game__cell' src='image/" +
           randomVal +
-          "' onclick='select(this)' selected='false'>" +
-          img +
-          "</td>"
-      );
+          ".png'/>";
+        currentRow.append(
+          "<td width='50px' height='50px' row='" +
+            rowIndex +
+            "' col='" +
+            col +
+            "' value='" +
+            randomVal +
+            "' onclick='select(this)' selected='false'>" +
+            img +
+            "</td>"
+        );
+      }
     }
     $("#board").html(table);
   }

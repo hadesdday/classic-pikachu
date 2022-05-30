@@ -88,12 +88,9 @@ function setFixedLevel(t, lvl, bs) {
 
 function restart() {
   clearInterval(counter);
-  level = 1;
-  levelNow = level;
-  boardSize = 8;
   score = 0;
   array = [];
-  time = 300;
+  time = ogTime;
   ogTime = time;
   setLevel(level);
   drawBoard(boardSize);
@@ -197,6 +194,10 @@ function shiftAllCellToStart() {
   });
 }
 
+$("#shuffleValue").click(() => {
+  shuffleValue();
+});
+
 function setTimeLeft() {
   const loop = setInterval(setTime, 1000);
 
@@ -234,20 +235,50 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+function reverseBoard() {
+  twoDimensionalArray.reverse();
+
+  $("td[selected='false'").each(function () {
+    var row = this.getAttribute("row");
+    var col = this.getAttribute("col");
+
+    var val = Number(twoDimensionalArray[row][col]);
+    if (val !== 0) {
+      this.setAttribute("value", val);
+      var childElm = this.firstChild;
+      var src = "image/" + val + ".png";
+      childElm.setAttribute("src", src);
+    }
+  });
+}
+
+function shuffleValue() {
+  $("td[selected='false'").each(function () {
+    var row = this.getAttribute("row");
+    var col = this.getAttribute("col");
+
+    var shuffleValue = random(1, boardSize);
+    this.setAttribute("value", shuffleValue);
+    twoDimensionalArray[row][col] = shuffleValue;
+    var childElm = this.firstChild;
+    var src = "image/" + shuffleValue + ".png";
+    childElm.setAttribute("src", src);
+  });
+}
+
 function shuffle() {
   let temp = [];
 
   $("td[selected='false']").each(function () {
-    var val = this.getAttribute("value");
-    let now = val;
-    temp.push(now);
+    var val = Number(this.getAttribute("value"));
+    temp.push(val);
   });
 
   $("td[selected='false']").each(function () {
     var row = this.getAttribute("row");
     var col = this.getAttribute("col");
     let randomIndex = Math.floor(Math.random() * temp.length);
-    let splicedElm = temp.splice(randomIndex, 1);
+    let splicedElm = temp.splice(randomIndex, 1)[0];
 
     this.setAttribute("value", splicedElm);
     twoDimensionalArray[row][col] = splicedElm;
@@ -298,11 +329,15 @@ function select(elm) {
       second.style.visibility = "hidden";
       first.setAttribute("selected", true);
       second.setAttribute("selected", true);
-      console.log("matrix before shifted ", twoDimensionalArray);
       if (typeof levelNow !== undefined && levelNow >= 2) {
         shiftAllCellToStart();
-        console.log("matrix after shifted ", twoDimensionalArray);
         reloadBoard();
+      }
+      if (typeof levelNow !== undefined && levelNow >= 3) {
+        shuffle();
+      }
+      if (typeof levelNow !== undefined && levelNow >= 4) {
+        reverseBoard();
       }
     }
     first.style.opacity = 1;
@@ -590,7 +625,7 @@ function drawBoard(size) {
   for (let rowIndex = 1; rowIndex < rowNum; rowIndex++) {
     let currentRow = $("<tr></tr>").appendTo(table);
     for (let col = 1; col < colNum; col++) {
-      let randomVal = randomValArr.splice(0, 1);
+      let randomVal = Number(randomValArr.splice(0, 1)[0]);
       // let randomVal = matrix[rowIndex][col];
       let img =
         "<img width='50' height='50' class='game__cell' src='image/" +

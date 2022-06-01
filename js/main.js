@@ -146,7 +146,7 @@ function addFourDirectionLine() {
     let col = Number(this.getAttribute("col"));
     var childElm = this.firstChild;
 
-    if (row === midIndex || col === midIndex || col === c) {
+    if (row === midIndex || row === c || col === midIndex || col === c) {
       $(this).removeAttr("onclick");
       this.setAttribute("selected", true);
       $(childElm).remove();
@@ -163,7 +163,7 @@ function addMiddleLine() {
     let row = Number(this.getAttribute("row"));
     var childElm = this.firstChild;
 
-    if (row === midIndex) {
+    if (row === midIndex || row === midIndex + 1) {
       $(this).removeAttr("onclick");
       this.setAttribute("selected", true);
       $(childElm).remove();
@@ -447,7 +447,7 @@ function select(elm) {
           shuffle();
           reverseBoard();
         }
-        if (levelNow === 5) {
+        if (levelNow >= 5) {
           shuffle();
         }
       }
@@ -627,7 +627,6 @@ function checkOnRowByBorder(p1, p2, type) {
       row
     )
   ) {
-
     while (
       twoDimensionalArray[Number(min.getAttribute("row"))][y] === 0 &&
       twoDimensionalArray[Number(max.getAttribute("row"))][y] === 0

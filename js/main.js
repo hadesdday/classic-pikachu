@@ -129,14 +129,19 @@ function playSound(key) {
 
 function addFourDirectionLine() {
   var midIndex = boardSize / 2;
-  let t = twoDimensionalArray[0];
-  twoDimensionalArray[midIndex] = t;
+  let barrier = [];
+
+  for (let i = 0; i < boardSize + 2; i++) {
+    barrier.push(-1);
+  }
+
+  twoDimensionalArray[midIndex] = barrier;
   let c = midIndex + 1;
 
   twoDimensionalArray.map((x) => {
     x.map((__, i) => {
       if (i === midIndex || i === c) {
-        x[i] = 0;
+        x[i] = -1;
       }
     });
   });
@@ -148,6 +153,7 @@ function addFourDirectionLine() {
 
     if (row === midIndex || row === c || col === midIndex || col === c) {
       $(this).removeAttr("onclick");
+      $(this).removeAttr("value");
       this.setAttribute("selected", true);
       $(childElm).remove();
     }
@@ -156,8 +162,13 @@ function addFourDirectionLine() {
 
 function addMiddleLine() {
   let midIndex = boardSize / 2;
-  let t = twoDimensionalArray[0];
-  twoDimensionalArray[midIndex] = t;
+
+  let c = [];
+  for (let i = 0; i < boardSize + 2; i++) {
+    c.push(-1);
+  }
+
+  twoDimensionalArray[midIndex] = c;
 
   $("td").each(function () {
     let row = Number(this.getAttribute("row"));
@@ -165,6 +176,7 @@ function addMiddleLine() {
 
     if (row === midIndex || row === midIndex + 1) {
       $(this).removeAttr("onclick");
+      $(this).removeAttr("value");
       this.setAttribute("selected", true);
       $(childElm).remove();
     }

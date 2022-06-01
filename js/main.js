@@ -403,10 +403,6 @@ function checkAllCell() {
 }
 
 function select(elm) {
-  let row = elm.getAttribute("row");
-  let col = elm.getAttribute("col");
-  let val = elm.getAttribute("value");
-
   playSound(0);
 
   elm.style.opacity = 0.5;
@@ -465,8 +461,6 @@ function select(elm) {
     array = [];
     checkAllCell();
   }
-  console.log("square clicked ", { row, col, val });
-  console.log("square clicked array ", { array });
 }
 
 function selfChoose(a, b) {
@@ -633,9 +627,6 @@ function checkOnRowByBorder(p1, p2, type) {
       row
     )
   ) {
-    var n1 = Number(min.getAttribute("row"));
-    var n2 = Number(max.getAttribute("row"));
-    console.log({ n1, n2 });
 
     while (
       twoDimensionalArray[Number(min.getAttribute("row"))][y] === 0 &&
@@ -669,15 +660,11 @@ function checkOnColumnByBorder(p1, p2, type) {
   var col = Number(min.getAttribute("col"));
   var rowFinish = Number(max.getAttribute("row"));
 
-  console.log("before ", { x, col, rowFinish, type });
-
   if (type === -1) {
     rowFinish = Number(min.getAttribute("row"));
     x = Number(min.getAttribute("row")) + Number(type);
     col = Number(max.getAttribute("col"));
   }
-
-  console.log("after ", { x, col, rowFinish, type });
 
   if (
     (twoDimensionalArray[rowFinish][col] === 0 ||

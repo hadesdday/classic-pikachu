@@ -33,22 +33,34 @@ $("#increaseLevel").click(() => {
   switch (levelNow) {
     case 1:
       setFixedLevel(time, levelNow, boardSize);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 2:
       setFixedLevel(time, levelNow, boardSize);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 3:
       setFixedLevel(time, levelNow, boardSize);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 4:
       setFixedLevel(time, levelNow, boardSize);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 5:
       setFixedLevel(time, levelNow, boardSize);
+      $("#shuffleValue").removeAttr("disabled");
+      $("#shuffleValue").css("opacity", 1);
       addMiddleLine();
       break;
     case 6:
       setFixedLevel(time, levelNow, boardSize);
+      $("#shuffleValue").removeAttr("disabled");
+      $("#shuffleValue").css("opacity", 1);
       addFourDirectionLine();
       break;
   }
@@ -60,22 +72,34 @@ $(".level").click(function () {
   switch (level) {
     case 1:
       setFixedLevel(300, 1, 8);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 2:
       setFixedLevel(400, 2, 10);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 3:
       setFixedLevel(500, 3, 12);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 4:
       setFixedLevel(600, 4, 14);
+      $("#shuffleValue").attr("disabled", true);
+      $("#shuffleValue").css("opacity", 0.5);
       break;
     case 5:
       setFixedLevel(700, 5, 16);
+      $("#shuffleValue").removeAttr("disabled");
+      $("#shuffleValue").css("opacity", 1);
       addMiddleLine();
       break;
     case 6:
       setFixedLevel(800, 6, 18);
+      $("#shuffleValue").removeAttr("disabled");
+      $("#shuffleValue").css("opacity", 1);
       addFourDirectionLine();
       break;
   }

@@ -18,10 +18,12 @@ $(() => {
   setTimeLeft();
 });
 
+//xáo trộn vị trí các ô trong bảng
 $("#shuffle").click(() => {
   shuffle();
 });
 
+//tăng level sau khi thắng màn chơi
 $("#increaseLevel").click(() => {
   clearInterval(counter);
   isWin = false;
@@ -30,6 +32,8 @@ $("#increaseLevel").click(() => {
   level += 1;
   levelNow = level;
   boardSize += 2;
+
+  //tăng level và chỉ cho phép từ level 5 trở đi mới có thể đổi hình các ô
   switch (levelNow) {
     case 1:
       setFixedLevel(time, levelNow, boardSize);
@@ -67,6 +71,7 @@ $("#increaseLevel").click(() => {
   $(".win-modal").css("display", "none");
 });
 
+//set các level cố định và chỉ cho phép từ level 5 trở đi mới có thể đổi hình các ô
 $(".level").click(function () {
   let level = Number($(this).attr("level"));
   switch (level) {
@@ -105,6 +110,7 @@ $(".level").click(function () {
   }
 });
 
+//khởi động lại màn chơi
 $(".restart").click(function () {
   restart();
   playSound(3);
@@ -112,10 +118,13 @@ $(".restart").click(function () {
   $(".modal").css("display", "none");
 });
 
+//đổi hình các ô trong bảng
 $("#shuffleValue").click(() => {
   shuffleValue();
+  playSound(1);
 });
 
+//phát âm thanh
 function playSound(key) {
   switch (Number(key)) {
     case 0:
@@ -151,13 +160,18 @@ function playSound(key) {
   }
 }
 
+//thêm đường ở bốn hướng
 function addFourDirectionLine() {
   var midIndex = boardSize / 2;
+
+  //ma trận của đường ở bốn hướng
   let barrier = [];
 
-  for (let i = 0; i < boardSize + 2; i++) {
+  barrier.push(0);
+  for (let i = 1; i < boardSize + 1; i++) {
     barrier.push(-1);
   }
+  barrier.push(0);
 
   twoDimensionalArray[midIndex] = barrier;
   let c = midIndex + 1;
@@ -184,15 +198,21 @@ function addFourDirectionLine() {
   });
 }
 
+//thêm đường ở vị trí giữa bảng
 function addMiddleLine() {
   let midIndex = boardSize / 2;
 
   let c = [];
-  for (let i = 0; i < boardSize + 2; i++) {
+  c.push(0);
+
+  for (let i = 1; i < boardSize + 1; i++) {
     c.push(-1);
   }
 
+  c.push(0);
+
   twoDimensionalArray[midIndex] = c;
+  twoDimensionalArray[midIndex + 1] = c;
 
   $("td").each(function () {
     let row = Number(this.getAttribute("row"));
@@ -207,6 +227,7 @@ function addMiddleLine() {
   });
 }
 
+//set level cố định theo tham số nhận vào
 function setFixedLevel(t, lvl, bs) {
   clearInterval(counter);
   isWin = false;
@@ -224,6 +245,7 @@ function setFixedLevel(t, lvl, bs) {
   playSound(3);
 }
 
+//khởi động lại màn chơi
 function restart() {
   clearInterval(counter);
   score = 0;
@@ -239,6 +261,7 @@ function restart() {
   playSound(1);
 }
 
+//random chẵn số lần các phần tử theo kích thước bảng
 function randomValArray() {
   let t = [];
   let ranLeft = [];
@@ -266,6 +289,7 @@ function randomValArray() {
   return t;
 }
 
+//đẩy các ô về phía trước
 function shiftAllCellToStart() {
   let temp = [];
 
@@ -333,6 +357,7 @@ function shiftAllCellToStart() {
   });
 }
 
+//hiển thị thời gian còn lại của trò chơi
 function setTimeLeft() {
   const loop = setInterval(setTime, 1000);
 
@@ -357,22 +382,27 @@ function setTimeLeft() {
   }
 }
 
+//hiển thị thời gian trò chơi
 function setGameTime() {
   $("#time").text(time);
 }
 
+//hiển thị điểm của người chơi
 function setScore(score) {
   $("#score").text("Score " + score);
 }
 
+//hiển thị level hiện tại
 function setLevel(level) {
   $("#level-title").text("Level " + level);
 }
 
+//random số trong khoảng từ tham số nhận vào
 function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+//đảo ngược bảng
 function reverseBoard() {
   twoDimensionalArray.reverse();
 
@@ -390,6 +420,7 @@ function reverseBoard() {
   });
 }
 
+//đổi hình các ô có trong bảng
 function shuffleValue() {
   $("td[selected='false'").each(function () {
     var row = this.getAttribute("row");
@@ -404,6 +435,7 @@ function shuffleValue() {
   });
 }
 
+//xáo trộn vị trí các ô trong bảng
 function shuffle() {
   let temp = [];
 
@@ -426,6 +458,7 @@ function shuffle() {
   });
 }
 
+//kiểm tra các ô đã được nguời chơi nối hết
 function checkAllCell() {
   var selectedCells = $("td[selected='true'");
   if (selectedCells.length === boardSize * boardSize) {
@@ -438,6 +471,7 @@ function checkAllCell() {
   }
 }
 
+//hàm chọn khi người chơi click vào ô
 function select(elm) {
   playSound(0);
 
@@ -487,7 +521,6 @@ function select(elm) {
           shuffle();
         }
       }
-
       playSound(4);
     } else {
       playSound(2);
@@ -499,13 +532,7 @@ function select(elm) {
   }
 }
 
-function selfChoose(a, b) {
-  if (a == b) {
-    return true;
-  }
-  return false;
-}
-
+//kiểm tra hai điểm đã chọn có đường đi hợp lệ
 function checkTwoPoint(first, second) {
   var firstRow = Number(first.getAttribute("row"));
   var firstCol = Number(first.getAttribute("col"));
@@ -526,11 +553,11 @@ function checkTwoPoint(first, second) {
       return true;
     }
 
-    if (checkRowSquare(first, second)) {
+    if (checkByRowRectangle(first, second)) {
       return true;
     }
 
-    if (checkColumnSquare(first, second)) {
+    if (checkByColumnRectangle(first, second)) {
       return true;
     }
 
@@ -553,6 +580,7 @@ function checkTwoPoint(first, second) {
   return false;
 }
 
+//kiểm tra cùng hàng
 function checkOnRow(x, y, row) {
   let min = Math.min(x, y);
   let max = Math.max(x, y);
@@ -565,6 +593,7 @@ function checkOnRow(x, y, row) {
   return true;
 }
 
+//kiểm tra cùng cột
 function checkOnColumn(x, y, col) {
   let min = Math.min(x, y);
   let max = Math.max(x, y);
@@ -577,7 +606,8 @@ function checkOnColumn(x, y, col) {
   return true;
 }
 
-function checkRowSquare(x, y) {
+//kiểm tra cùng hàng trong phạm vi là hình chữ nhật không vượt qua border của bảng
+function checkByRowRectangle(x, y) {
   let min = x;
   let max = y;
 
@@ -606,7 +636,8 @@ function checkRowSquare(x, y) {
   return false;
 }
 
-function checkColumnSquare(x, y) {
+//kiểm tra cùng cột trong phạm vị hình chữ nhật không vươt qua border của bảng
+function checkByColumnRectangle(x, y) {
   let min = x;
   let max = y;
 
@@ -635,6 +666,7 @@ function checkColumnSquare(x, y) {
   return false;
 }
 
+//kiểm tra cùng hàng vượt qua phạm vị của hình chữ nhật
 function checkOnRowByBorder(p1, p2, type) {
   let min = p1;
   let max = p2;
@@ -682,6 +714,7 @@ function checkOnRowByBorder(p1, p2, type) {
   return false;
 }
 
+//kiểm tra cùng cột vượt qua phạm vị của hình chữ nhật
 function checkOnColumnByBorder(p1, p2, type) {
   var min = p1;
   var max = p2;
@@ -729,6 +762,7 @@ function checkOnColumnByBorder(p1, p2, type) {
   return false;
 }
 
+//vẽ bảng theo size truyền vào
 function drawBoard(size) {
   let rowNum = Number(size) + 1;
   let colNum = Number(size) + 1;
@@ -738,6 +772,7 @@ function drawBoard(size) {
   let matrix = [];
   let temp = [];
 
+  //lấy mảng đã random chẵn số lần theo size
   var randomValArr = randomValArray();
 
   for (let i = 0; i < boardSize + 2; i++) {
@@ -789,6 +824,7 @@ function drawBoard(size) {
   }
 }
 
+//vẽ lại bảng
 function reloadBoard() {
   let rowNum = Number(boardSize) + 1;
   let colNum = Number(boardSize) + 1;
